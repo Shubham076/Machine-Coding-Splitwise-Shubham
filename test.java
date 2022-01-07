@@ -6,163 +6,95 @@ class test {
         System.err.print(n.length() > 0 ? n + ": ": "");
         dbg.print(o);
     }
-    static class Edge {
-        int d;
-        int w;
-        Edge(int d) {
-            this.d = d;
-            this.w = 1;
+    static class LRU{
+        class Node{
+            int k;
+            int v;
+            Node next;
+            Node prev;
+            Node(){
+
+            }
+            Node(int k, int v){
+                this.k = k;
+                this.v = v;
+            }
+
+            public String toString(){
+                return this.k + "=" + this.v + ", ";
+            }
         }
-        Edge(int d, int w) {
-            this.d = d;
-            this.w = w;
+        int s;
+        HashMap<Integer,Node> map;
+        Node head;
+        Node tail; 
+        LRU(int s){
+            map = new HashMap<>();
+            this.s = s;
+            head = new Node();
+            tail = new Node();
+            head.next = tail;
+            tail.prev = head;
         }
 
-        public String toString(){
-            return this.d + "";
-        }
-    } 
-    static ArrayList<Edge>[] g;
-    static void print(int v){
-        for(int i = 0; i < v; i++){
-            System.err.print(i + ": ");
-            System.err.print(g[i]);
-            System.err.println();
-        }
-        System.err.println();
-    }
-
-    static int[] par;
-    static int[] size;
-    static int[] rank;
-    static int find(int n){
-        if(par[n] == n){
+        Node extract(Node n){
+            Node left = n.prev;
+            Node right = n.next;
+            n.prev = n.next = null;
+            left.next = right;
+            right.prev = left;
             return n;
         }
-        int temp = find(par[n]);
-        return par[n] = temp;
-    }
+        void add(Node n){
+            Node tm1 = tail.prev;
+            tm1.next = n;
+            n.next = tail;
+            tail.prev = n;
+            n.prev = tm1;
+        }
 
-    static boolean union2(int x, int y){
-        int lx = find(x);
-        int ly = find(y);
-        if(lx != ly){
-            if(rank[lx] > rank[ly]){
-                par[ly] = lx;
+        int get(int key){
+            if(map.containsKey(key)){
+                Node n = map.get(key);
+                extract(n);
+                add(n);
+                return n.v;
             }
-            else if(rank[ly] > rank[lx]){
-                par[lx] = ly;
+            else return -1;
+        }
+
+        void put(int k, int v){
+            if(map.containsKey(k)){
+                Node temp = map.get(k);
+                temp.v = v;
+                add(temp);
             }
             else{
-                par[lx] = ly;
-                rank[ly]++;
+                if(map.size() == s){
+                    Node n = extract(head.next);
+                    map.remove(n.k);
+                }
+                Node n = new Node(k, v);
+                map.put(k, n);
+                add(n);
             }
-            return true;
         }
-        else{
-            return false;
+
+        void print(){
+            for(Node temp = head; temp != null; temp = temp.next){
+                System.out.print(temp);
+            }
+            System.out.println();
         }
     }
-
-    static boolean union(int x, int y){
-        int lx = find(x);
-        int ly = find(y);
-        if(lx != ly){
-            if(size[lx] >= size[ly]){
-                par[ly] = lx;
-                size[lx] += size[ly];
-            }
-            else if(size[ly] > size[lx]){
-                par[lx] = ly;
-                size[ly] += size[lx];
-            }
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-    static int[][] dirs = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-    public static void main(String[] args) throws Exception{
-        dbg = new Debugger();
-        Scanner scn = new Scanner(System.in);
-        // int v = scn.nextInt();
-        // int e = scn.nextInt();
-        // g = new ArrayList[v];
-        // for (int i = 0; i < v; i++) {
-        //     g[i] = new ArrayList<>();
-        // }
-
-        // for (int i = 0; i < e; i++) {
-        //     int s = scn.nextInt();
-        //     int d = scn.nextInt();
-        //     g[s].add(new Edge(d));
-        //     g[d].add(new Edge(s));
-        // }
-        int n = 2;
-        int[][] arr = new int[n][n];
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < n; j++){
-                arr[i][j] = scn.nextInt();
-            }
-        }
-        size = new int[n * n];
-        par = new int[n * n];
-        rank = new int[n * n];
-        for(int i = 0; i < size.length; i++){
-            size[i] = 1;
-            par[i] = i; 
-        }
-        
-        boolean hasZero = false;
-        for(int i = 0 ; i < n; i++){
-            for(int j = 0; j < n; j++){
-                if(arr[i][j] == 0){
-                    hasZero = true;
-                    continue;
-                }
-                else{
-                    int x = i * n + j;
-                    for(int[] dir: dirs){
-                        int nx = i + dir[0];
-                        int ny = j + dir[1];
-                        if(nx < 0 || nx >= n || ny < 0 || ny >= n || arr[nx][ny] == 0){
-                            continue;
-                        }
-                        int y = nx * n + ny;
-                        union(x, y);
-                    }
-                }
-            }
-        }
-        int ans = 1;
-        if(!hasZero){
-            System.out.println(n * n);
-        }
-        else{
-            for(int i = 0; i < n; i++){
-                for(int j = 0; j < n; j++){
-                    if(arr[i][j] == 0){
-                        int cnt = 0;
-                        HashSet<Integer> uparent = new HashSet<>();
-                        for(int[] dir: dirs){
-                            int nx = i + dir[0];
-                            int ny = j + dir[1];
-                            if(nx < 0 || nx >= n || ny < 0 || ny >= n || arr[nx][ny] == 0){
-                                continue;
-                            }
-                            int x = nx * n + ny;
-                            int p = find(x);
-                            if(!uparent.contains(p)){
-                                cnt += size[p];
-                                ans = Math.max(cnt + 1, ans);
-                                uparent.add(p);
-                            }
-                        }
-                    }
-                }
-            }
-            System.out.println(ans);
-        }
+    public static void main(String[] args){
+        LRU c = new LRU(3);
+        c.put(1, 10);
+        c.put(2, 20);
+        c.put(3, 30);
+        c.print();
+        c.get(1);
+        c.put(4, 40);
+        c.print();
     }
 }

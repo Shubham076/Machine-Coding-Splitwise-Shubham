@@ -28,6 +28,9 @@ class bits {
 			}
 		}
 	}
+
+
+	
 	public static void main(String[] args) {
 		String s = "3435335";
 		int k = 3;
