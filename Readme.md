@@ -6,10 +6,10 @@
 
 ### TestCases
 - Absolute
-![](https://github.com/Shubham076/Dark-Themes/blob/main/Screenshots/Absolute.png)
+![](https://github.com/Shubham076/Machine-Coding-Splitwise-Shubham/blob/master/Screenshots/Absolute.png)
 - Equal
-![](https://github.com/Shubham076/Dark-Themes/blob/main/Screenshots/Equal.png)
+- ![](https://github.com/Shubham076/Machine-Coding-Splitwise-Shubham/blob/master/Screenshots/Equal.png)
 - Percent
-![](https://github.com/Shubham076/Dark-Themes/blob/main/Screenshots/percent.png)
+- ![](https://github.com/Shubham076/Machine-Coding-Splitwise-Shubham/blob/master/Screenshots/percent.png)
 - Settle with min transactions
-- ![](https://github.com/Shubham076/Dark-Themes/blob/main/Screenshots/minTransactions.png)
+- ![](https://github.com/Shubham076/Machine-Coding-Splitwise-Shubham/blob/master/Screenshots/minTransactions.png)
